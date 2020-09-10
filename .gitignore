@@ -29,6 +29,5 @@ override.tf.json
 # example: *tfplan*
 
 
-# Staging environments 
-
-env_vars.sh
+# local secrets
+secretvars.auto.tfvars
