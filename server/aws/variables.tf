@@ -176,7 +176,7 @@ variable "new_key_claim_allow_list" {
 }
 
 
-variable "feature_shield" { 
-  type = bool
+variable "feature_shield" {
+  type    = bool
   default = true
 }

@@ -64,6 +64,6 @@ rds_server_instance_class    = "db.r5.large"
 # AWS Route 53 - route53.tf
 ###
 # Value should come from a TF_VAR environment variable (e.g. set in a Github Secret)
-route53_zone_name = "covid-alert-demo.cdssandbox.xyz"
+# route53_zone_name = 
 
 feature_shield = false
