@@ -28,6 +28,7 @@ env:
   TF_VAR_cloudfront_custom_header: ${{ secrets.TF_VAR_cloudfront_custom_header }}
   TF_VAR_environment: ${{ secrets.TF_VAR_environment }}
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  TF_VAR_github_sha: 07f0b9724902b94fa8096bc35539daceb9b8c4f0
 
 jobs:
   terraform-plan:
