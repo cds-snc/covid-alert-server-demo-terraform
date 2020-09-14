@@ -5,7 +5,7 @@ on:
     branches: [master]
 
 env:
-  SHA: 07f0b9724902b94fa8096bc35539daceb9b8c4f0
+  SHA: e1af3c08bb21f83813da70f724e9012ed52feb7a
   TF_VAR_route53_zone_name: ${{ secrets.TF_VAR_route53_zone_name }}
 
 jobs:
