@@ -15,7 +15,7 @@ terraform {
 
 terraform {
   backend "s3" {
-    bucket = "covid-shield-production-tf-storage"
+    bucket = "covid-shield-demo-tf-storage"
     key    = "aws/backend/default.tfstate"
     region = "ca-central-1"
   }
