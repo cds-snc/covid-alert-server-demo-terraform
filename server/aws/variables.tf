@@ -174,9 +174,3 @@ variable "new_key_claim_allow_list" {
   type    = list
   default = ["0.0.0.0/1", "128.0.0.0/1"]
 }
-
-
-variable "feature_shield" {
-  type    = bool
-  default = true
-}
