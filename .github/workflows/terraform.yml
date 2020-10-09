@@ -29,6 +29,8 @@ env:
   TF_VAR_environment: ${{ secrets.TF_VAR_environment }}
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   TF_VAR_github_sha: ef00a18013fe5a8ca08e5932ea638606d15a7b2e
+  TF_VAR_metrics_username: ${{ secrets.METRICS_USERNAME }}
+  TF_VAR_metrics_password: ${{ secrets.METRICS_PASSWORD }}
 
 jobs:
   terraform-plan:

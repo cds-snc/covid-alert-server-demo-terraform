@@ -179,3 +179,15 @@ variable "feature_shield" {
   type    = bool
   default = true
 }
+
+###
+# /events endpoint basic auth
+###
+
+variable "metrics_username" {
+  type = string
+}
+
+variable "metrics_password" {
+  type = string
+}
