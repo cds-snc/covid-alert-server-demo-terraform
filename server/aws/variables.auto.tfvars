@@ -66,4 +66,9 @@ rds_server_instance_class    = "db.t3.medium"
 # Value should come from a TF_VAR environment variable (e.g. set in a Github Secret)
 # route53_zone_name = 
 
+###
+# Feature Flags
+###
+
+feature_redis = false
 feature_shield = false
