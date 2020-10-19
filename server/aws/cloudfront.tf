@@ -34,6 +34,7 @@ resource "aws_cloudfront_distribution" "key_retrieval_distribution" {
     }
   }
 
+
   enabled         = true
   is_ipv6_enabled = true
   web_acl_id      = aws_wafv2_web_acl.key_retrieval_cdn.arn
@@ -81,6 +82,29 @@ resource "aws_cloudfront_distribution" "key_retrieval_distribution" {
     default_ttl            = 86400
     max_ttl                = 31536000
     compress               = true
+  }
+
+  ordered_cache_behavior { // We don't want to cache the events endpoint just pass through 
+    path_pattern     = "/events/*"
+    allowed_methods  = ["GET", "HEAD"]
+    cached_methods   = ["GET", "HEAD"]
+    target_origin_id = aws_lb.covidshield_key_retrieval.name
+
+    forwarded_values {
+      query_string = true
+      headers      = ["Host", "Authorization"]
+
+      cookies {
+        forward = "all"
+      }
+    }
+
+    viewer_protocol_policy = "https-only"
+    min_ttl                = 0
+    default_ttl            = 0
+    max_ttl                = 0
+    compress               = true
+
   }
 
 
