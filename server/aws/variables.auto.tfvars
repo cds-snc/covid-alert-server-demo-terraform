@@ -67,3 +67,4 @@ rds_server_instance_class    = "db.t3.medium"
 # route53_zone_name = 
 
 feature_shield = false
+feature_redis  = false

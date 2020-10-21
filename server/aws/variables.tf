@@ -175,11 +175,6 @@ variable "new_key_claim_allow_list" {
   default = ["0.0.0.0/1", "128.0.0.0/1"]
 }
 
-variable "feature_shield" {
-  type    = bool
-  default = true
-}
-
 ###
 # /events endpoint basic auth
 ###
@@ -190,4 +185,17 @@ variable "metrics_username" {
 
 variable "metrics_password" {
   type = string
+}
+
+
+###
+# Feature Flags
+###
+
+variable "feature_redis" {
+  type = bool
+}
+
+variable "feature_shield" {
+  type = bool
 }
