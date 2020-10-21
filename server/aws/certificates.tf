@@ -38,14 +38,6 @@ resource "aws_route53_record" "covidshield_certificate_validation" {
   ttl             = 60
 }
 
-resource "aws_route53_record" "covidshield_certificate_validation_2" {
-  zone_id = aws_route53_zone.covidshield.zone_id
-  name    = aws_acm_certificate.covidshield.domain_validation_options.1.resource_record_name
-  type    = aws_acm_certificate.covidshield.domain_validation_options.1.resource_record_type
-  records = [aws_acm_certificate.covidshield.domain_validation_options.1.resource_record_value]
-  ttl     = 60
-}
-
 resource "aws_route53_record" "retrieval_covidshield_certificate_validation" {
   zone_id         = aws_route53_zone.covidshield.zone_id
   name            = aws_acm_certificate.retrieval_covidshield.domain_validation_options.0.resource_record_name
