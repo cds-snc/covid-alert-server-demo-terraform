@@ -1,6 +1,5 @@
 # Enable shield on cloudfront distribution
 resource "aws_shield_protection" "key_retrieval_distribution" {
-
   count        = var.feature_shield ? 1 : 0
   name         = "key_retrieval_distribution"
   resource_arn = aws_cloudfront_distribution.key_retrieval_distribution.arn

@@ -40,7 +40,6 @@ resource "aws_s3_bucket_policy" "exposure_config" {
 POLICY
 }
 
-
 resource "aws_s3_bucket" "firehose_waf_logs" {
   bucket = "covid-shield-${var.environment}-waf-logs"
   acl    = "private"
