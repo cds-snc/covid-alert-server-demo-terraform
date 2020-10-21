@@ -70,5 +70,5 @@ rds_server_instance_class    = "db.t3.medium"
 # Feature Flags
 ###
 
-feature_redis = false
+feature_redis  = false
 feature_shield = false
