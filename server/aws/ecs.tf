@@ -48,8 +48,8 @@ data "template_file" "covidshield_key_retrieval_task" {
 
 resource "aws_ecs_task_definition" "covidshield_key_retrieval" {
   family       = var.ecs_key_retrieval_name
-  cpu          = 2048
-  memory       = "4096"
+  cpu          = var.cpu_units
+  memory       = var.memory
   network_mode = "awsvpc"
 
   requires_compatibilities = ["FARGATE"]
@@ -77,7 +77,7 @@ resource "aws_ecs_service" "covidshield_key_retrieval" {
   # Enable the new ARN format to propagate tags to containers (see config/terraform/aws/README.md)
   propagate_tags = "SERVICE"
 
-  desired_count                      = 3
+  desired_count                      = 1
   deployment_minimum_healthy_percent = 50
   deployment_maximum_percent         = 200
   health_check_grace_period_seconds  = 60
@@ -176,13 +176,14 @@ data "template_file" "covidshield_key_submission_task" {
     metric_provider       = var.metric_provider
     tracer_provider       = var.tracer_provider
     env                   = var.environment
+    enable_test_tools     = var.enable_test_tools
   }
 }
 
 resource "aws_ecs_task_definition" "covidshield_key_submission" {
   family       = var.ecs_key_submission_name
-  cpu          = 2048
-  memory       = "4096"
+  cpu          = var.cpu_units
+  memory       = var.memory
   network_mode = "awsvpc"
 
   requires_compatibilities = ["FARGATE"]
@@ -210,7 +211,7 @@ resource "aws_ecs_service" "covidshield_key_submission" {
   # Enable the new ARN format to propagate tags to containers (see config/terraform/aws/README.md)
   propagate_tags = "SERVICE"
 
-  desired_count                      = 3
+  desired_count                      = 1
   deployment_minimum_healthy_percent = 50
   deployment_maximum_percent         = 200
   health_check_grace_period_seconds  = 60

@@ -38,6 +38,9 @@ ecs_key_submission_name = "KeySubmission"
 
 submission_autoscale_enabled = true
 retrieval_autoscale_enabled  = true
+min_capacity                 = 1
+cpu_units                    = 512
+memory                       = 1024
 
 ###
 # AWS VPC - networking.tf
@@ -64,7 +67,7 @@ rds_server_instance_class    = "db.t3.medium"
 # AWS Route 53 - route53.tf
 ###
 # Value should come from a TF_VAR environment variable (e.g. set in a Github Secret)
-# route53_zone_name = 
+# route53_zone_name =
 
 ###
 # Feature Flags
@@ -72,3 +75,19 @@ rds_server_instance_class    = "db.t3.medium"
 
 feature_redis  = false
 feature_shield = false
+
+
+###
+# Metrics Alarms
+###
+
+diagnosis_key_total_warn     = 9000
+diagnosis_key_total_critical = 13500
+
+claimed_one_time_code_total_warn     = 3000
+claimed_one_time_code_total_critical = 4500
+
+unclaimed_one_time_code_total_warn     = 250
+unclaimed_one_time_code_total_critical = 400
+
+enable_test_tools = false

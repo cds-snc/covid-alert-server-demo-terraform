@@ -65,6 +65,16 @@ variable "max_capacity" {
   default = 10
 }
 
+variable "cpu_units" {
+  type    = number
+  default = 2048
+}
+
+variable "memory" {
+  type    = number
+  default = 4096
+}
+
 # Task Key Retrieval
 variable "ecs_key_retrieval_name" {
   type = string
@@ -198,4 +208,14 @@ variable "feature_redis" {
 
 variable "feature_shield" {
   type = bool
+}
+
+
+###
+# Testing Tools
+###
+
+variable "enable_test_tools" {
+  type    = bool
+  default = false
 }
