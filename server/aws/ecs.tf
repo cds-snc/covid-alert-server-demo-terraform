@@ -77,7 +77,7 @@ resource "aws_ecs_service" "covidshield_key_retrieval" {
   # Enable the new ARN format to propagate tags to containers (see config/terraform/aws/README.md)
   propagate_tags = "SERVICE"
 
-  desired_count                      = 1
+  desired_count                      = var.min_capacity
   deployment_minimum_healthy_percent = 50
   deployment_maximum_percent         = 200
   health_check_grace_period_seconds  = 60
@@ -111,50 +111,6 @@ resource "aws_ecs_service" "covidshield_key_retrieval" {
     ]
   }
 
-}
-
-resource "aws_appautoscaling_target" "retrieval" {
-  count              = var.retrieval_autoscale_enabled ? 1 : 0
-  service_namespace  = "ecs"
-  resource_id        = "service/${aws_ecs_service.covidshield_key_retrieval.cluster}/${aws_ecs_service.covidshield_key_retrieval.name}"
-  scalable_dimension = "ecs:service:DesiredCount"
-  min_capacity       = var.min_capacity
-  max_capacity       = var.max_capacity
-}
-resource "aws_appautoscaling_policy" "retrieval_cpu" {
-  count              = var.retrieval_autoscale_enabled ? 1 : 0
-  name               = "retrieval_cpu"
-  policy_type        = "TargetTrackingScaling"
-  service_namespace  = "ecs"
-  resource_id        = "service/${aws_ecs_service.covidshield_key_retrieval.cluster}/${aws_ecs_service.covidshield_key_retrieval.name}"
-  scalable_dimension = "ecs:service:DesiredCount"
-
-  target_tracking_scaling_policy_configuration {
-    scale_in_cooldown  = var.scale_in_cooldown
-    scale_out_cooldown = var.scale_out_cooldown
-    predefined_metric_specification {
-      predefined_metric_type = "ECSServiceAverageCPUUtilization"
-    }
-    target_value = var.cpu_scale_metric
-  }
-}
-
-resource "aws_appautoscaling_policy" "retrieval_memory" {
-  count              = var.retrieval_autoscale_enabled ? 1 : 0
-  name               = "retrieval_memory"
-  policy_type        = "TargetTrackingScaling"
-  service_namespace  = "ecs"
-  resource_id        = "service/${aws_ecs_service.covidshield_key_retrieval.cluster}/${aws_ecs_service.covidshield_key_retrieval.name}"
-  scalable_dimension = "ecs:service:DesiredCount"
-
-  target_tracking_scaling_policy_configuration {
-    scale_in_cooldown  = var.scale_in_cooldown
-    scale_out_cooldown = var.scale_out_cooldown
-    predefined_metric_specification {
-      predefined_metric_type = "ECSServiceAverageMemoryUtilization"
-    }
-    target_value = var.memory_scale_metric
-  }
 }
 
 ###
@@ -211,7 +167,7 @@ resource "aws_ecs_service" "covidshield_key_submission" {
   # Enable the new ARN format to propagate tags to containers (see config/terraform/aws/README.md)
   propagate_tags = "SERVICE"
 
-  desired_count                      = 1
+  desired_count                      = var.min_capacity
   deployment_minimum_healthy_percent = 50
   deployment_maximum_percent         = 200
   health_check_grace_period_seconds  = 60
@@ -243,48 +199,5 @@ resource "aws_ecs_service" "covidshield_key_submission" {
       task_definition, # updated by codedeploy
       load_balancer    # updated by codedeploy
     ]
-  }
-}
-resource "aws_appautoscaling_target" "submission" {
-  count              = var.submission_autoscale_enabled ? 1 : 0
-  service_namespace  = "ecs"
-  resource_id        = "service/${aws_ecs_service.covidshield_key_submission.cluster}/${aws_ecs_service.covidshield_key_submission.name}"
-  scalable_dimension = "ecs:service:DesiredCount"
-  min_capacity       = var.min_capacity
-  max_capacity       = var.max_capacity
-}
-resource "aws_appautoscaling_policy" "submission_cpu" {
-  count              = var.submission_autoscale_enabled ? 1 : 0
-  name               = "submission_cpu"
-  policy_type        = "TargetTrackingScaling"
-  service_namespace  = "ecs"
-  resource_id        = "service/${aws_ecs_service.covidshield_key_submission.cluster}/${aws_ecs_service.covidshield_key_submission.name}"
-  scalable_dimension = "ecs:service:DesiredCount"
-
-  target_tracking_scaling_policy_configuration {
-    scale_in_cooldown  = var.scale_in_cooldown
-    scale_out_cooldown = var.scale_out_cooldown
-    predefined_metric_specification {
-      predefined_metric_type = "ECSServiceAverageCPUUtilization"
-    }
-    target_value = var.cpu_scale_metric
-  }
-}
-
-resource "aws_appautoscaling_policy" "submission_memory" {
-  count              = var.submission_autoscale_enabled ? 1 : 0
-  name               = "submission_memory"
-  policy_type        = "TargetTrackingScaling"
-  service_namespace  = "ecs"
-  resource_id        = "service/${aws_ecs_service.covidshield_key_submission.cluster}/${aws_ecs_service.covidshield_key_submission.name}"
-  scalable_dimension = "ecs:service:DesiredCount"
-
-  target_tracking_scaling_policy_configuration {
-    scale_in_cooldown  = var.scale_in_cooldown
-    scale_out_cooldown = var.scale_out_cooldown
-    predefined_metric_specification {
-      predefined_metric_type = "ECSServiceAverageMemoryUtilization"
-    }
-    target_value = var.memory_scale_metric
   }
 }
