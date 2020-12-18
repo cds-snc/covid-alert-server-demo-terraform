@@ -11,6 +11,7 @@ resource "aws_s3_bucket" "exposure_config" {
       }
     }
   }
+  #tfsec:ignore:AWS002 - Ignore logs
 }
 
 resource "aws_s3_bucket_policy" "exposure_config" {
