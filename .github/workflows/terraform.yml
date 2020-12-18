@@ -33,39 +33,75 @@ env:
   TF_VAR_metrics_password: ${{ secrets.METRICS_PASSWORD }}
 
 jobs:
-  terraform-plan:
+  terraform-plan-security-scan:
     if: github.ref != 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Terraform security scan
+        uses: triat/terraform-security-scan@5f54224e1192fa468b93bcaecb5253679b828c8e
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: false
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
-          terraform_version: 0.13.4
+          terraform_version: 0.14.2
+
+      - name: Terraform Format
+        id: fmt
+        run: terraform fmt -check -no-color
+        continue-on-error: true
 
       - name: Terraform Init
         run: |
           terraform init
 
-      - name: Terraform Format
-        run: terraform fmt -check
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
 
       - name: Terraform Plan
-        run: terraform plan -input=false
+        id: plan
+        run: terraform plan -input=false -no-color
+        continue-on-error: true
 
-  terraform-security-scan:
-    if: github.ref != 'refs/heads/master'
-    runs-on: ubuntu-latest
-    continue-on-error: false
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Terraform security scan
-        uses: triat/terraform-security-scan@v1.2.2
+      - uses: actions/github-script@0.9.0
+        if: github.event_name == 'pull_request'
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+            #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+            #### Terraform Validation 🤖${{ steps.validate.outputs.stdout }}
+            #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+
+            <details><summary>Show Plan</summary>
+
+            \`\`\`${process.env.PLAN}\`\`\`
+
+            </details>
+
+            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`${{ env.tf_actions_working_dir }}\`, Workflow: \`${{ github.workflow }}\`*`;
+
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            })
+      - name: Check Success
+        if:  ${{ ( success()  ||  failure() ) && ( steps.fmt.outputs.exit_code  == 1 || steps.plan.outputs.exit_code == 1 ) }}
+        run: |
+          echo steps.fmt.outcome ${{ steps.fmt.outcome }}
+          echo steps.plan.outcome ${{ steps.plan.outcome }}
+          echo "(${{ steps.fmt.outcome }} == failure || ${{ steps.plan.outcome }} == failure)"
+          exit 1
 
   terraform-apply:
     if: github.ref == 'refs/heads/master' && github.event_name == 'push'
@@ -78,7 +114,7 @@ jobs:
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
       with:
-          terraform_version: 0.13.4
+          terraform_version: 0.14.2
 
     - name: Terraform Format
       run: terraform fmt -check
