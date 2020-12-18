@@ -7,7 +7,7 @@ terraform {
   }
   required_providers {
     aws = {
-      source = "hashicorp/aws"
+      source  = "hashicorp/aws"
       version = "~> 3.21"
     }
 
@@ -15,12 +15,12 @@ terraform {
 }
 
 provider "aws" {
-  region  = var.region
+  region = var.region
 }
 
 provider "aws" {
-  alias   = "us-east-1"
-  region  = "us-east-1"
+  alias  = "us-east-1"
+  region = "us-east-1"
 }
 
 data "aws_caller_identity" "current" {}
