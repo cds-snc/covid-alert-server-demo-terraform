@@ -7,6 +7,11 @@ provider "aws" {
 resource "aws_s3_bucket" "storage_bucket" {
   bucket = "covid-shield-demo-tf-storage"
   acl    = "private"
+
+  versioning {
+    enabled = true
+  }
+
   #tfsec:ignore:AWS002
   server_side_encryption_configuration {
     rule {
