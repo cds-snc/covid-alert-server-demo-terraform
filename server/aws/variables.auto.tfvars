@@ -67,14 +67,15 @@ rds_server_instance_class    = "db.t3.small"
 # AWS Route 53 - route53.tf
 ###
 # Value should come from a TF_VAR environment variable (e.g. set in a Github Secret)
-# route53_zone_name =
+# route53_zone_name = ""
+
 
 ###
 # Feature Flags
 ###
-
-feature_redis  = false
-feature_shield = false
+feature_redis        = false
+feature_shield       = false
+feature_count_alarms = false
 
 
 ###
@@ -91,3 +92,25 @@ unclaimed_one_time_code_total_warn     = 250
 unclaimed_one_time_code_total_critical = 400
 
 enable_test_tools = false
+
+###
+# API Gateway & Lambda Alarms
+###
+
+api_gateway_error_threshold = 95
+api_gateway_min_invocations = 0
+api_gateway_max_invocations = 10000
+api_gateway_max_latency     = 3000
+
+raw_metrics_dynamodb_wcu_max       = 300
+aggregate_metrics_dynamodb_wcu_max = 300
+
+save_metrics_max_avg_duration      = 3000
+aggregate_metrics_max_avg_duration = 60000
+backoff_retry_max_avg_duration     = 3000
+
+###
+# Create CSV Lambda Variables
+###
+
+create_csv_tag = "latest"
