@@ -6,7 +6,7 @@ on:
       - master
   pull_request:
     paths:
-      - "server/aws/*"
+      - "server/aws/**"
       - ".github/workflows/*"
 
 defaults:
@@ -27,10 +27,10 @@ env:
   TF_VAR_new_key_claim_allow_list: ${{ secrets.TF_VAR_new_key_claim_allow_list }}
   TF_VAR_cloudfront_custom_header: ${{ secrets.TF_VAR_cloudfront_custom_header }}
   TF_VAR_environment: ${{ secrets.TF_VAR_environment }}
+  TF_VAR_metrics_username: ${{ secrets.METRICS_USERNAME}}
+  TF_VAR_metrics_password: ${{ secrets.METRICS_PASSWORD}}
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   TF_VAR_github_sha: ef00a18013fe5a8ca08e5932ea638606d15a7b2e
-  TF_VAR_metrics_username: ${{ secrets.METRICS_USERNAME }}
-  TF_VAR_metrics_password: ${{ secrets.METRICS_PASSWORD }}
 
 jobs:
   terraform-plan-security-scan:
@@ -42,6 +42,8 @@ jobs:
 
       - name: Terraform security scan
         uses: triat/terraform-security-scan@5f54224e1192fa468b93bcaecb5253679b828c8e
+        with:
+          tfsec_version: "v0.39.21"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: false
@@ -95,8 +97,9 @@ jobs:
               repo: context.repo.repo,
               body: output
             })
+
       - name: Check Success
-        if:  ${{ ( success()  ||  failure() ) && ( steps.fmt.outputs.exit_code  == 1 || steps.plan.outputs.exit_code == 1 ) }}
+        if: ${{ ( success()  ||  failure() ) && ( steps.fmt.outputs.exit_code  == 1 || steps.plan.outputs.exit_code == 1 ) }}
         run: |
           echo steps.fmt.outcome ${{ steps.fmt.outcome }}
           echo steps.plan.outcome ${{ steps.plan.outcome }}
@@ -107,24 +110,23 @@ jobs:
     if: github.ref == 'refs/heads/master' && github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
 
-    - name: Checkout
-      uses: actions/checkout@v2
-
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v1
-      with:
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
           terraform_version: 0.14.2
 
-    - name: Terraform Format
-      run: terraform fmt -check
+      - name: Terraform Format
+        run: terraform fmt -check
 
-    - name: Terraform Init
-      run: |
-        terraform init
+      - name: Terraform Init
+        run: |
+          terraform init
 
-    - name: Terraform Plan
-      run: terraform plan -input=false -out terraform.tfplan
+      - name: Terraform Plan
+        run: terraform plan -input=false -out terraform.tfplan
 
-    - name: Terraform Apply
-      run: terraform apply -input=false -auto-approve terraform.tfplan
+      - name: Terraform Apply
+        run: terraform apply -input=false -auto-approve terraform.tfplan
