@@ -30,4 +30,5 @@ override.tf.json
 
 
 # local secrets
+secrets.auto.tfvars
 secretvars.auto.tfvars
