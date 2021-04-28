@@ -87,7 +87,7 @@ jobs:
 
             <details><summary>Show Plan</summary>
 
-            \`\`\`${tfPlan}\`\`\`
+            \`\`\`${tfPlan.length > 65000 ? tfPlan.substr(0, 65000) + " (truncated)..." : tfPlan}\`\`\`
 
             </details>
 
