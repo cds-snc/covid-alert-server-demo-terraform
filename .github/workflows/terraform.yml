@@ -72,7 +72,8 @@ jobs:
         run: |
           # Store the plan as a file read by the next step.  We can't just pass it as an env var
           # because a large plan will overflow what GitHub allows as an env var.
-          terraform plan -input=false -no-color 2>&1 | tee ${{ github.workspace }}/tf-plan.out
+          terraform refresh
+          terraform plan -refresh=false -input=false -no-color 2>&1 | tee ${{ github.workspace }}/tf-plan.out
         continue-on-error: true
 
       - uses: actions/github-script@0.9.0
@@ -84,7 +85,7 @@ jobs:
             const tfPlan = await fs.readFile("${{ github.workspace }}/tf-plan.out", "utf8");
             const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
             #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
-            #### Terraform Validation 🤖${{ steps.validate.outputs.stdout }}
+            #### Terraform Validation 🤖\`${{ steps.validate.outputs.stdout }}\`
             #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
 
             <details><summary>Show Plan</summary>
