@@ -48,8 +48,8 @@ resource "aws_lb_target_group" "covidshield_key_retrieval_2" {
   }
 }
 
-  # Logging is not required in the Demo environment
-  # tfsec:ignore:AWS0702
+# Logging is not required in the Demo environment
+# tfsec:ignore:AWS0702
 resource "aws_lb" "covidshield_key_retrieval" {
   name               = "covidshield-key-retrieval"
   internal           = false #tfsec:ignore:AWS005
