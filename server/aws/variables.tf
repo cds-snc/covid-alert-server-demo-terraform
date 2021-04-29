@@ -210,6 +210,10 @@ variable "feature_shield" {
   type = bool
 }
 
+variable "feature_count_alarms" {
+  type = bool
+}
+
 
 ###
 # Testing Tools
@@ -218,4 +222,13 @@ variable "feature_shield" {
 variable "enable_test_tools" {
   type    = bool
   default = false
+}
+
+###
+# Metrics CSV Variables
+###
+
+## This variable will be read from TF_VAR_CREATE_CSV_IMAGE in github actions
+variable "create_csv_tag" {
+  type = string
 }
