@@ -48,6 +48,8 @@ resource "aws_lb_target_group" "covidshield_key_retrieval_2" {
   }
 }
 
+  # Logging is not required in the Demo environment
+  # tfsec:ignore:AWS0702
 resource "aws_lb" "covidshield_key_retrieval" {
   name               = "covidshield-key-retrieval"
   internal           = false #tfsec:ignore:AWS005
@@ -56,12 +58,6 @@ resource "aws_lb" "covidshield_key_retrieval" {
     aws_security_group.covidshield_load_balancer.id
   ]
   subnets = aws_subnet.covidshield_public.*.id
-
-  access_logs {
-    bucket  = "cbs-satellite-account-bucket${data.aws_caller_identity.current.account_id}"
-    enabled = true
-    prefix  = "${data.aws_caller_identity.current.account_id}/elb_logs_v2"
-  }
 
   tags = {
     Name                  = "covidshield-key-retrieval"
@@ -172,6 +168,8 @@ resource "aws_lb_target_group" "covidshield_key_submission_2" {
   }
 }
 
+# Logging is not required in the Demo environment
+# tfsec:ignore:AWS0702
 resource "aws_lb" "covidshield_key_submission" {
   name               = "covidshield-key-submission"
   internal           = false #tfsec:ignore:AWS005
@@ -180,11 +178,6 @@ resource "aws_lb" "covidshield_key_submission" {
     aws_security_group.covidshield_load_balancer.id
   ]
   subnets = aws_subnet.covidshield_public.*.id
-  access_logs {
-    bucket  = "cbs-satellite-account-bucket${data.aws_caller_identity.current.account_id}"
-    enabled = true
-    prefix  = "${data.aws_caller_identity.current.account_id}/elb_logs_v2"
-  }
   tags = {
     Name                  = "covidshield-key-submission"
     (var.billing_tag_key) = var.billing_tag_value

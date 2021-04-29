@@ -10,7 +10,8 @@ data "aws_caller_identity" "current" {}
 resource "aws_s3_bucket" "masked_metrics" {
 
   # Versioning on this resource is handled through git
-  # tfsec:ignore:AWS077
+  # Logging is not required in the Demo environment
+  # tfsec:ignore:AWS077 tfsec:ignore:AWS002
 
   bucket = "masked-metrics-${random_string.bucket_random_id.result}-${var.environment}"
 
@@ -21,18 +22,13 @@ resource "aws_s3_bucket" "masked_metrics" {
       }
     }
   }
-
-  logging {
-    target_bucket = "cbs-satellite-account-bucket${data.aws_caller_identity.current.account_id}"
-    target_prefix = "${data.aws_caller_identity.current.account_id}/s3_access_logs/masked-metrics-${random_string.bucket_random_id.result}-${var.environment}/"
-  }
-
 }
 
 resource "aws_s3_bucket" "unmasked_metrics" {
 
   # Versioning on this resource is handled through git
-  # tfsec:ignore:AWS077
+  # Logging is not required in the Demo environment
+  # tfsec:ignore:AWS077 tfsec:ignore:AWS002
 
   bucket = "unmasked-metrics-${random_string.bucket_random_id.result}-${var.environment}"
   server_side_encryption_configuration {
@@ -42,10 +38,4 @@ resource "aws_s3_bucket" "unmasked_metrics" {
       }
     }
   }
-
-  logging {
-    target_bucket = "cbs-satellite-account-bucket${data.aws_caller_identity.current.account_id}"
-    target_prefix = "${data.aws_caller_identity.current.account_id}/s3_access_logs/unmasked-metrics-${random_string.bucket_random_id.result}_${var.environment}/"
-  }
-
 }
