@@ -59,6 +59,7 @@ jobs:
         continue-on-error: true
 
       - name: Terraform Init
+        id: init
         run: |
           terraform init
 
@@ -67,6 +68,7 @@ jobs:
         run: terraform validate -no-color
 
       - name: Terraform Plan
+        id: plan
         run: |
           # Store the plan as a file read by the next step.  We can't just pass it as an env var
           # because a large plan will overflow what GitHub allows as an env var.
@@ -87,7 +89,9 @@ jobs:
 
             <details><summary>Show Plan</summary>
 
-            \`\`\`${tfPlan.length > 65000 ? tfPlan.substr(0, 65000) + " (truncated)..." : tfPlan}\`\`\`
+            \`\`\`terraform
+            ${tfPlan.substr(0, 65000)}
+            \`\`\`
 
             </details>
 
