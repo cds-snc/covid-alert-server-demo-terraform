@@ -50,7 +50,7 @@ jobs:
 
       - name: Render image for retrieval service
         id: taskdef-retrieval
-        uses: aws-actions/amazon-ecs-render-task-definition@9666dc9
+        uses: aws-actions/amazon-ecs-render-task-definition@v1.0.20
         with:
           task-definition: task-definition-retrieval.json
           container-name: ${{ steps.download-taskdef-retrieval.outputs.container_name }}
@@ -65,7 +65,7 @@ jobs:
 
       - name: Deploy image for retrieval service
         timeout-minutes: 10
-        uses: aws-actions/amazon-ecs-deploy-task-definition@7218b9c
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1.4.4
         with:
           task-definition: ${{ steps.taskdef-retrieval.outputs.task-definition }}
           service: KeyRetrieval
@@ -118,7 +118,7 @@ jobs:
 
       - name: Render image for submission service
         id: taskdef-submission
-        uses: aws-actions/amazon-ecs-render-task-definition@9666dc9
+        uses: aws-actions/amazon-ecs-render-task-definition@v1.0.20
         with:
           task-definition: task-definition-submission.json
           container-name: ${{ steps.download-taskdef-submission.outputs.container_name }}
@@ -133,7 +133,7 @@ jobs:
 
       - name: Deploy image for submission service
         timeout-minutes: 10
-        uses: aws-actions/amazon-ecs-deploy-task-definition@7218b9c
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1.4.4
         with:
           task-definition: ${{ steps.taskdef-submission.outputs.task-definition }}
           service: KeySubmission

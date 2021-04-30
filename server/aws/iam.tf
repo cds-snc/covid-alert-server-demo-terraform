@@ -176,3 +176,14 @@ resource "aws_iam_role_policy_attachment" "lambda_validate_deploy" {
   role       = aws_iam_role.lambda_validate_deploy.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
+
+# Interact with ECR in our GitHub workflows
+resource "aws_iam_user" "pipeline_ecr" {
+  name                 = "pipeline_ecr"
+  permissions_boundary = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPowerUser"
+}
+
+resource "aws_iam_user_policy_attachment" "pipeline_ecr_power_user_policy_attach" {
+  user       = aws_iam_user.pipeline_ecr.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPowerUser"
+}
