@@ -3,7 +3,7 @@
 ###
 
 resource "aws_cloudfront_origin_access_identity" "origin_access_identity" {
-  comment = "cloudfront origin access identity"
+    comment = "cloudfront origin access identity"
 }
 
 resource "aws_cloudfront_distribution" "key_retrieval_distribution" {
