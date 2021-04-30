@@ -64,6 +64,7 @@ jobs:
       - name: Terraform Validate
         id: validate
         run: terraform validate -no-color
+        continue-on-error: true
 
       - name: Terraform Refresh
         id: refresh
@@ -102,7 +103,7 @@ jobs:
             })
 
       - name: Check Success
-        if: ${{ ( success()  ||  failure() ) && ( steps.fmt.outputs.exit_code  == 1 || steps.plan.outputs.exit_code == 1 ) }}
+        if: ${{ ( success() || failure() ) && ( steps.fmt.outputs.exit_code  > 0 || steps.plan.outputs.exit_code == 1 ) }}
         run: |
           echo steps.fmt.outcome ${{ steps.fmt.outcome }}
           echo steps.plan.outcome ${{ steps.plan.outcome }}
