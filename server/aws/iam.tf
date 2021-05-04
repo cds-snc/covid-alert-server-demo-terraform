@@ -177,13 +177,38 @@ resource "aws_iam_role_policy_attachment" "lambda_validate_deploy" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
-# Interact with ECR in our GitHub workflows
-resource "aws_iam_user" "pipeline_ecr" {
-  name                 = "pipeline_ecr"
-  permissions_boundary = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPowerUser"
+###
+# AWS IAM - Interact with ECR and Lambda in GitHub Actions
+###
+resource "aws_iam_user" "github_actions" {
+  name = "github_actions"
 }
 
-resource "aws_iam_user_policy_attachment" "pipeline_ecr_power_user_policy_attach" {
-  user       = aws_iam_user.pipeline_ecr.name
+resource "aws_iam_policy" "lambda_update_function_policy" {
+  name        = "AllowLambdaUpdateFunction"
+  description = "Allow for updates to Lambda functions and their configuration"
+  policy      = data.aws_iam_policy_document.lambda_update_function_policy_doc.json
+}
+
+data "aws_iam_policy_document" "lambda_update_function_policy_doc" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "lambda:UpdateFunctionCode",
+      "lambda:UpdateFunctionConfiguration",
+    ]
+    resources = [
+      "arn:aws:lambda:${var.region}:${data.aws_caller_identity.current.account_id}:function:*",
+    ]
+  }
+}
+
+resource "aws_iam_user_policy_attachment" "github_actions_lambda_update_function_policy_attach" {
+  user       = aws_iam_user.github_actions.name
+  policy_arn = aws_iam_policy.lambda_update_function_policy.arn
+}
+
+resource "aws_iam_user_policy_attachment" "github_actions_power_user_policy_attach" {
+  user       = aws_iam_user.github_actions.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPowerUser"
 }
